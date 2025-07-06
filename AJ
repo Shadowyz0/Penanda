@@ -53,10 +53,10 @@ local Button = MainTab:CreateButton({
    end,
 })
 
-local Slider = MainTab:CreateSlider({
+local Slider = MainTab:({CreateSlider
    Name = "WalkSpeed",
-   Range = {0, 100},
-   Increment = 1,
+   Range = {0, 1000},
+   Increment = 5,
    Suffix = "Walkspeed",
    CurrentValue = 0,
    Flag = "Slider1",
