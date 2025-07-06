@@ -55,10 +55,10 @@ local Button = MainTab:CreateButton({
 
 local Slider = MainTab:({CreateSlider
    Name = "WalkSpeed",
-   Range = {0, 1000},
+   Range = {0, 500},
    Increment = 5,
    Suffix = "Walkspeed",
-   CurrentValue = 0,
+   CurrentValue = 16,
    Flag = "Slider1",
    Callback = function(Value)
        -- Assuming you're trying to change the player's walk speed in Roblox
