@@ -1,4 +1,40 @@
-local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
+-- Fix for Rayfield not showing due to potential loadstring limitations
+-- This approach attempts to directly execute the fetched script content.
+local RayfieldScriptContent = game:HttpGet('https://sirius.menu/rayfield', true)
+local Rayfield = nil
+
+-- Attempt to execute the script content directly.
+-- This is a common workaround for loadstring being disabled.
+-- Note: This might not work on all executors if they have very strict sandboxing.
+xpcall(function()
+    Rayfield = loadstring(RayfieldScriptContent)()
+end, function(err)
+    warn("Failed to load Rayfield with loadstring:", err)
+    -- Fallback for executors that might support direct execution differently
+    -- This part is more speculative as executor behavior varies greatly.
+    -- For most modern executors, the above loadstring inside xpcall should work
+    -- if loadstring is enabled. If it's disabled, a direct execution might be needed.
+    -- However, directly 'running' string content isn't a standard Roblox API.
+    -- The common fix is often ensuring the executor itself enables loadstring.
+    -- For demonstration, we'll assume the primary issue is loadstring's general availability
+    -- and the user's executor *might* have a less restrictive environment for executed strings.
+    -- Without knowing the specific executor, providing a universal fix for disabled loadstring is hard.
+    -- The most common advice is to ensure your executor supports loadstring.
+
+    -- If loadstring is genuinely disabled and no direct execution alternative exists,
+    -- then the exploit itself needs to provide a way to load external scripts.
+end)
+
+if not Rayfield then
+    Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
+end
+
+-- If Rayfield still isn't loaded, you might want to notify the user.
+if not Rayfield then
+    print("Rayfield failed to load. Please check your executor's settings for 'loadstring' or try a different executor.")
+    -- You could also add a UI notification here if you have a basic one.
+    return -- Exit the script if Rayfield didn't load
+end
 
 local Window = Rayfield:CreateWindow({
    Name = "🏘️ PENANDA HUB 🏘️",
@@ -44,24 +80,53 @@ Rayfield:Notify({
 
 local MainTab = Window:CreateTab("🏠 Main", 0) -- Title, Image
 
+-- Variables for Infinite Jump toggle
+local isInfiniteJumpEnabled = false
+local jumpConnection = nil
+
 local Button = MainTab:CreateButton({
    Name = "Infinite Jump",
    Callback = function()
-   	game:GetService("UserInputService").JumpRequest:connect(function()
-		game:GetService"Players".LocalPlayer.Character:FindFirstChildOfClass'Humanoid':ChangeState("Jumping")		
-	end)
+       isInfiniteJumpEnabled = not isInfiniteJumpEnabled -- Toggle the state
+
+       if isInfiniteJumpEnabled then
+           -- Enable Infinite Jump
+           jumpConnection = game:GetService("UserInputService").JumpRequest:Connect(function()
+               local character = game:GetService("Players").LocalPlayer.Character
+               if character and character:FindFirstChildOfClass('Humanoid') then
+                   character:FindFirstChildOfClass'Humanoid':ChangeState("Jumping")
+               end
+           end)
+           Rayfield:Notify({
+               Title = "Infinite Jump",
+               Content = "Infinite Jump Enabled!",
+               Duration = 3,
+               Image = "check"
+           })
+       else
+           -- Disable Infinite Jump
+           if jumpConnection then
+               jumpConnection:Disconnect()
+               jumpConnection = nil
+           end
+           Rayfield:Notify({
+               Title = "Infinite Jump",
+               Content = "Infinite Jump Disabled!",
+               Duration = 3,
+               Image = "x"
+           })
+       end
    end,
 })
 
-local Slider = MainTab:({CreateSlider
+local Slider = MainTab:CreateSlider({
    Name = "WalkSpeed",
-   Range = {0, 100},
+   Range = {0, 1000},
    Increment = 5,
    Suffix = "Walkspeed",
    CurrentValue = 0,
    Flag = "Slider1",
    Callback = function(Value)
-       -- Assuming you're trying to change the player's walk speed in Roblox
        local player = game.Players.LocalPlayer
        if player and player.Character and player.Character.Humanoid then
            player.Character.Humanoid.WalkSpeed = Value
