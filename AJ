@@ -237,3 +237,56 @@ MainTab:CreateSlider({
         })
     end,
 })
+
+local Toggle = MainTab:CreateToggle({
+    Name = "NoClip",
+    CurrentValue = false,
+    Callback = (function()
+        local Players = game:GetService("Players")
+        local RunService = game:GetService("RunService")
+        local player = Players.LocalPlayer
+
+        -- This variable MUST be outside the callback to persist
+        local connection = nil
+
+        return function(Value)
+            local noClip = Value
+
+            -- Function to set CanCollide
+            local function applyNoClip()
+                if player.Character then
+                    for _, part in ipairs(player.Character:GetDescendants()) do
+                        if part:IsA("BasePart") then
+                            part.CanCollide = not noClip
+                        end
+                    end
+                end
+            end
+
+            if noClip then
+                -- Enable NoClip
+                applyNoClip()
+                connection = RunService.Stepped:Connect(function()
+                    applyNoClip()
+                end)
+                Rayfield:Notify({
+                    Title = "NoClip",
+                    Content = "NoClip Enabled.",
+                    Duration = 1.3,
+                })
+            else
+                -- Disable NoClip
+                if connection then
+                    connection:Disconnect()
+                    connection = nil
+                end
+                applyNoClip()
+                Rayfield:Notify({
+                    Title = "NoClip",
+                    Content = "NoClip Disabled.",
+                    Duration = 1.3,
+                })
+            end
+        end
+    end)()
+})
