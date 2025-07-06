@@ -292,3 +292,31 @@ local Toggle = MainTab:CreateToggle({
         end
     end)()
 })
+
+
+local HitboxSize = 2 -- default size multiplier
+
+MainTab:CreateSlider({
+    Name = "Hitbox Size",
+    Range = {1, 100}, -- Range updated to 1–100
+    Increment = 1,
+    Suffix = "Size",
+    CurrentValue = HitboxSize,
+    Flag = "HitboxSlider",
+    Callback = function(Value)
+        HitboxSize = Value
+        -- Iterate over all players except self
+        for _, player in pairs(game:GetService("Players"):GetPlayers()) do
+            if player ~= game:GetService("Players").LocalPlayer then
+                local character = player.Character
+                if character and character:FindFirstChild("HumanoidRootPart") then
+                    character.HumanoidRootPart.Size = Vector3.new(HitboxSize, HitboxSize, HitboxSize)
+                    character.HumanoidRootPart.Transparency = 0.7
+                    character.HumanoidRootPart.BrickColor = BrickColor.new("Really red")
+                    character.HumanoidRootPart.Material = Enum.Material.Neon
+                    character.HumanoidRootPart.CanCollide = false
+                end
+            end
+        end
+    end,
+})
