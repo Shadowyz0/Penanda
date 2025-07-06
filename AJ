@@ -65,7 +65,7 @@ local Window = Rayfield:CreateWindow({
       Subtitle = "Key System",
       Note = "Ask the Owner For The Key", -- Use this to tell the user how to get a key
       FileName = "Key", -- It is recommended to use something unique as other scripts using Rayfield may overwrite your key file
-      SaveKey = false, -- The user's key will be saved, but if you change the key, they will be unable to use your script
+      SaveKey = true, -- The user's key will be saved, but if you change the key, they will be unable to use your script
       GrabKeyFromSite = false, -- If this is true, set Key below to the RAW site you would like Rayfield to get the key from
       Key = {"Naruto"} -- List of keys that will be accepted by the system, can be RAW file links (pastebin, github etc) or simple strings ("hello","key22")
    }
@@ -74,7 +74,7 @@ local Window = Rayfield:CreateWindow({
 Rayfield:Notify({
    Title = "🏘️ PENANDA HUB 🏘️",
    Content = "Please Share My Script 👉👈",
-   Duration = 6.5,
+   Duration = 5,
    Image = "rewind",
 })
 
@@ -100,7 +100,7 @@ local Button = MainTab:CreateButton({
            Rayfield:Notify({
                Title = "Infinite Jump",
                Content = "Infinite Jump Enabled!",
-               Duration = 3,
+               Duration = 1.3,
                Image = "check"
            })
        else
@@ -112,7 +112,7 @@ local Button = MainTab:CreateButton({
            Rayfield:Notify({
                Title = "Infinite Jump",
                Content = "Infinite Jump Disabled!",
-               Duration = 3,
+               Duration = 1.3,
                Image = "x"
            })
        end
@@ -132,4 +132,106 @@ local Slider = MainTab:CreateSlider({
            player.Character.Humanoid.WalkSpeed = Value
        end
    end,
+})
+
+-- Make Speed a variable outside so the slider can modify it
+local Speed = 50
+
+-- Variables to track flying state
+local isFlying = false
+local FlyForce = nil
+local flyConnection = nil
+
+MainTab:CreateButton({
+    Name = "Fly (Mobile)",
+    Callback = function()
+        local Plr = game.Players.LocalPlayer
+        local Camera = workspace.CurrentCamera
+
+        if not isFlying then
+            -- Enable flight
+            isFlying = true
+
+            Rayfield:Notify({
+                Title = "Fly Mode",
+                Content = "Flying enabled!",
+                Duration = 1.3,
+            })
+
+            -- Wait for character
+            if not Plr.Character then
+                Plr.CharacterAdded:Wait()
+            end
+            local HRP = Plr.Character:WaitForChild("HumanoidRootPart")
+
+            -- Add BodyVelocity
+            FlyForce = Instance.new("BodyVelocity")
+            FlyForce.MaxForce = Vector3.new(9e9, 9e9, 9e9)
+            FlyForce.Parent = HRP
+
+            -- Get movement input
+            local GetMoveVector = require(
+                Plr:WaitForChild("PlayerScripts")
+                    :WaitForChild("PlayerModule")
+                    :WaitForChild("ControlModule")
+            )
+
+            -- Connect update
+            flyConnection = game:GetService("RunService").RenderStepped:Connect(function()
+                if not HRP or not FlyForce then return end
+
+                FlyForce.Velocity = Vector3.new()
+                local MoveDir = GetMoveVector:GetMoveVector()
+
+                if MoveDir.X ~= 0 then
+                    FlyForce.Velocity += Camera.CFrame.RightVector * MoveDir.X * Speed
+                end
+                if MoveDir.Z ~= 0 then
+                    FlyForce.Velocity -= Camera.CFrame.LookVector * MoveDir.Z * Speed
+                end
+
+                -- Rotate character
+                local lookDirection = Camera.CFrame.LookVector
+                lookDirection = Vector3.new(lookDirection.X, 0, lookDirection.Z).Unit
+                HRP.CFrame = CFrame.new(HRP.Position, HRP.Position + lookDirection)
+            end)
+        else
+            -- Disable flight
+            isFlying = false
+
+            if flyConnection then
+                flyConnection:Disconnect()
+                flyConnection = nil
+            end
+
+            if FlyForce then
+                FlyForce:Destroy()
+                FlyForce = nil
+            end
+
+            Rayfield:Notify({
+                Title = "Fly Mode",
+                Content = "Flight disabled. Landing!",
+                Duration = 1.3,
+            })
+        end
+    end,
+})
+
+-- Add a slider to control Speed
+MainTab:CreateSlider({
+    Name = "Fly Speed",
+    Range = {0, 1000},
+    Increment = 5,
+    Suffix = "Speed",
+    CurrentValue = Speed,
+    Flag = "FlySpeedSlider",
+    Callback = function(Value)
+        Speed = Value
+        Rayfield:Notify({
+            Title = "Fly Speed",
+            Content = "Fly speed set to "..tostring(Value),
+            Duration = 0.5,
+        })
+    end,
 })
