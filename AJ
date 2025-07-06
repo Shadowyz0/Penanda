@@ -37,10 +37,10 @@ if not Rayfield then
 end
 
 local Window = Rayfield:CreateWindow({
-   Name = "𝐏ᴇɴᴀɴᴅᴀ 𝐇ᴜʙ",
+   Name = "😶‍🌫️ Penanda Hub 😶‍🌫️",
    Icon = 0, -- Icon in Topbar. Can use Lucide Icons (string) or Roblox Image (number). 0 to use no icon (default).
-   LoadingTitle = "𝐏ᴇɴᴀɴᴅᴀ 𝐇ᴜʙ",
-   LoadingSubtitle = "by 𝐀ʀɴᴇʟ",
+   LoadingTitle = "😶‍🌫️ Penanda Hub 😶‍🌫️",
+   LoadingSubtitle = "by Arnel",
    ShowText = "Rayfield", -- for mobile users to unhide rayfield, change if you'd like
    Theme = "Default", -- Check https://docs.sirius.menu/rayfield/configuration/themes
 
@@ -61,7 +61,7 @@ local Window = Rayfield:CreateWindow({
 
    KeySystem = true, -- Set this to true to use our key system
    KeySettings = {
-      Title = "𝐏ᴇɴᴀɴᴅᴀ 𝐇ᴜʙ",
+      Title = "😶‍🌫️ Penanda Hub 😶‍🌫️",
       Subtitle = "Key System",
       Note = "Ask the Owner For The Key", -- Use this to tell the user how to get a key
       FileName = "Key", -- It is recommended to use something unique as other scripts using Rayfield may overwrite your key file
@@ -72,7 +72,7 @@ local Window = Rayfield:CreateWindow({
 })
 
 Rayfield:Notify({
-   Title = "𝐏ᴇɴᴀɴᴅᴀ 𝐇ᴜʙ",
+   Title = "😶‍🌫️ Penanda Hub 😶‍🌫️",
    Content = "ᴘʟᴇᴀsᴇ sʜᴀʀᴇ ᴍʏ sᴄʀɪᴘᴛʏ 👉👈",
    Duration = 5,
    Image = "rewind",
