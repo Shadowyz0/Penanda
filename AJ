@@ -29,7 +29,7 @@ local Window = Rayfield:CreateWindow({
       Subtitle = "Key System",
       Note = "Ask the Owner For The Key", -- Use this to tell the user how to get a key
       FileName = "Key", -- It is recommended to use something unique as other scripts using Rayfield may overwrite your key file
-      SaveKey = true, -- The user's key will be saved, but if you change the key, they will be unable to use your script
+      SaveKey = false, -- The user's key will be saved, but if you change the key, they will be unable to use your script
       GrabKeyFromSite = false, -- If this is true, set Key below to the RAW site you would like Rayfield to get the key from
       Key = {"Naruto"} -- List of keys that will be accepted by the system, can be RAW file links (pastebin, github etc) or simple strings ("hello","key22")
    }
@@ -55,7 +55,7 @@ local Button = MainTab:CreateButton({
 
 local Slider = MainTab:({CreateSlider
    Name = "WalkSpeed",
-   Range = {0, 1000},
+   Range = {0, 100},
    Increment = 5,
    Suffix = "Walkspeed",
    CurrentValue = 0,
