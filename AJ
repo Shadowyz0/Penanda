@@ -74,6 +74,7 @@ Rayfield:Notify({
 local PlayerTab = Window:CreateTab("🧍 Player", 0)
 local MovementTab = Window:CreateTab("🏃 Movement", 0)
 local MiscTab = Window:CreateTab("🛠 Misc", 0)
+local GamesTab = Window:CreateTab("🎮 Games",0)
 
 --====================================================--
 --== PLAYER TAB ======================================--
@@ -300,4 +301,12 @@ MiscTab:CreateSlider({
          end
       end
    end
+})
+
+local Button = GamesTab:CreateButton({
+   Name = "Steal A Brainrot (Beta)",
+   Callback = function()
+
+loadstring(game:HttpGet("https://raw.githubusercontent.com/acsu123/HOHO_H/main/Loading_UI"))()
+   end,
 })
