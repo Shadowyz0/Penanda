@@ -310,3 +310,12 @@ local Button = GamesTab:CreateButton({
 loadstring(game:HttpGet("https://raw.githubusercontent.com/acsu123/HOHO_H/main/Loading_UI"))()
    end,
 })
+
+local Button = GamesTab:CreateButton({
+   Name = "Jailbreak",
+   Callback = function()
+
+--[[
+	WARNING: Heads up! This script has not been verified by ScriptBlox. Use at your own risk!
+]]
+loadstring(game:HttpGet('https://raw.githubusercontent.com/BlitzIsKing/UniversalFarm/main/Loader/Regular'))()
